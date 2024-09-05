@@ -8,6 +8,9 @@ aleatorio = lambda: randint(1, 10)
 seguir = lambda: int(input("Quiere repetir el procedimiento?\n1 Si\n2 No\nElija un número: ")) == 1 
 #Si el input es 1, la funcion devuelve True. Si es 2, devuelve False
 
+posicion = lambda legajo, lista: [i for i in range(len(lista)) if lista[i][0] == legajo]
+#Devuelve en qué fila esta el legajo dentro de la matriz
+
 mostrar_calificacion = lambda lista: [print(f"|{legajo:^8}|{algebra:^12}|{programacion:^12}|{analisis:^8}|{sistemas:^8}|{desarrollo:^14}|") for legajo, algebra, programacion, analisis, sistemas, desarrollo in lista] 
 #Uso de corchetes solo para el print
 
@@ -42,17 +45,19 @@ def agregar_alumno(lista):
 def actualizar_alumno(lista):
     flag = True
     while flag == True:
-        posicion = []
-        while posicion == []:
+        flag_2 = True
+        while flag_2 == True:
             legajo_actualizar = int(input("Ingrese el legajo que quiere actualizar: "))
-            posicion = [i for i in range(len(lista)) if lista[i][0] == legajo_actualizar] #Saco en qué posicion esta el legajo en la lista
-            if posicion == []:
+            indice = posicion(legajo_actualizar, lista) #Saco en qué posicion esta el legajo en la lista
+            if indice == []:
                 print("No se ha podido encontrar ese legajo, ingrese otro.")
+            else:
+                flag_2 = False
         print("-"*26)
-        print(lista[posicion[0]])#Lo imprimo para que el usuario vea lo que hay en la fila
+        print(lista[indice[0]])#Lo imprimo para que el usuario vea lo que hay en la fila
         print("-"*26)
         calif = ingreso_notas()
-        lista[posicion[0]] = [legajo_actualizar,calif[0],calif[1],calif[2],calif[3],calif[4]]
+        lista[indice[0]] = [legajo_actualizar,calif[0],calif[1],calif[2],calif[3],calif[4]]
         print("Legajo actualizado")
         print("-"*26)
         if seguir() == False:
@@ -62,14 +67,15 @@ def actualizar_alumno(lista):
 def eliminar_alumno(lista):
     flag = True
     while flag == True:
-        legajo_eliminar = int(input("Ingrese el legajo que quiere eliminar: "))
-        flag_for = [True for fila in lista if legajo_eliminar in fila]
-        if flag_for != []: #si el flag existe
-            for i in range(0, len(lista)):
-                if legajo_eliminar == lista[i][0]:
-                    lista.pop(i)
-                    print("Legajo correctamente eliminado")
-                    print("-"*26)
-            if seguir() == False:
-                flag = False
+        flag_2 = True
+        while flag_2 == True:
+            legajo_actualizar = int(input("Ingrese el legajo que quiere eliminar "))
+            indice = posicion(legajo_actualizar, lista) #Saco en qué posicion esta el legajo en la lista
+            if indice == []:
+                print("No se ha podido encontrar ese legajo, ingrese otro.")
+            else:
+                flag_2 = False
+        lista.pop(indice[0]) #"indice" es una lista, entonces me fijo en la posición 0 para sacar el índice como entero
+        if seguir() == False:
+            flag = False
     return lista
